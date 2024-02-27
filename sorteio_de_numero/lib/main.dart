@@ -20,12 +20,15 @@ class Sorteio extends StatefulWidget {
 }
 
 class _SorteioState extends State<Sorteio> {
-  TextEditingController _controllerNumero1 = TextEditingController();
   TextEditingController _controllerChute = TextEditingController();
+
   String _resultado = '';
   int _numeroSorteado = 0;
+  int chute = 0;
 
-  void _sorte() {
+
+
+  void _sortearNumero() {
     Random random = Random();
     _numeroSorteado =
         random.nextInt(100); // Gera um número aleatório entre 0 e 99
@@ -34,17 +37,22 @@ class _SorteioState extends State<Sorteio> {
     });
   }
 
+  @override
+  void initiState() {
+    super.initState();
+     _sortearNumero();
+  }
+
   void _comparar() {
-    int chute = _numeroSorteado;
     if (chute != null) {
       if (chute == _numeroSorteado) {
         setState(() {
           _resultado = 'Parabéns! Você acertou!';
         });
-      } else {
-        setState(() {
-          _resultado = 'Você errou. Tente novamente.';
-        });
+      } else if (chute < _numeroSorteado) {
+        _resultado = 'O valor esta acima';
+      } else if (chute > _numeroSorteado) {
+        _resultado = 'O valor esta abaixo';
       }
     } else {
       setState(() {
@@ -66,25 +74,16 @@ class _SorteioState extends State<Sorteio> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: _controllerNumero1,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Número 1'),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _sorte,
-              child: Text('Sortear'),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
               controller: _controllerChute,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: 'Seu chute'),
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _comparar,
-              child: Text('Comparar'),
+              onPressed: () {
+                _comparar();
+              },
+              child: Text('Palpite'),
             ),
             SizedBox(height: 16.0),
             Text(
