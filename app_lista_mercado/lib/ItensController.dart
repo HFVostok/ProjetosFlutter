@@ -9,6 +9,7 @@ class ItensController extends ChangeNotifier {
 
   String get mensagem => _mensagem;
 
+
   void adicionarItem(String descricao) {
     // Verifica se a descrição não está vazia
     if (descricao.trim().isEmpty) {
@@ -81,4 +82,12 @@ class ItensController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void marcarComoComprado(int indice) {
+    if (indice >= 0 && indice < _itens.length) {
+      _itens[indice].comprado = true;
+      notifyListeners();
+    }
+  }
+
 }

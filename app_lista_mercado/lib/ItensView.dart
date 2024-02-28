@@ -11,6 +11,7 @@ class ItensScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Lista de Compras'),
       ),
+      backgroundColor: Colors.yellow[50],
       body: Column(
         children: [
           Padding(
@@ -27,6 +28,8 @@ class ItensScreen extends StatelessWidget {
                           Provider.of<ItensController>(context, listen: false)
                               .adicionarItem(_controller.text);
                           _controller.clear();
+                          _exibirSnackBar(
+                              context, 'Item adicionado com sucesso');
                         },
                         icon: Icon(Icons.add),
                       ),
@@ -64,6 +67,7 @@ class ItensScreen extends StatelessWidget {
                               Provider.of<ItensController>(context,
                                       listen: false)
                                   .diminuirQuantidade(index);
+                              _exibirSnackBar(context, 'Quantidade reduzida');
                             },
                           ),
                           Text('${model.tarefas[index].quantidade}'),
@@ -73,6 +77,7 @@ class ItensScreen extends StatelessWidget {
                               Provider.of<ItensController>(context,
                                       listen: false)
                                   .aumentarQuantidade(index);
+                              _exibirSnackBar(context, 'Quantidade aumentada');
                             },
                           ),
                         ],
@@ -93,10 +98,14 @@ class ItensScreen extends StatelessWidget {
                                 Provider.of<ItensController>(context,
                                         listen: false)
                                     .marcarComoConcluida(index);
+                                _exibirSnackBar(
+                                    context, 'Tarefa marcada como concluída');
                               } else {
                                 Provider.of<ItensController>(context,
                                         listen: false)
                                     .marcarComoNaoConcluida(index);
+                                _exibirSnackBar(context,
+                                    'Tarefa marcada como não concluída');
                               }
                             },
                           ),
@@ -105,6 +114,12 @@ class ItensScreen extends StatelessWidget {
                       onLongPress: () {
                         Provider.of<ItensController>(context, listen: false)
                             .excluirItem(index);
+                        _exibirSnackBar(context, 'Item excluído');
+                      },
+                      onTap: () {
+                        Provider.of<ItensController>(context, listen: false)
+                            .marcarComoComprado(index);
+                        _exibirSnackBar(context, 'Item marcado como comprado');
                       },
                     );
                   },
@@ -141,6 +156,7 @@ class ItensScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
+                _exibirSnackBar(context, 'Edição cancelada');
               },
               child: Text('Fechar'),
             ),
@@ -148,6 +164,7 @@ class ItensScreen extends StatelessWidget {
               onPressed: () {
                 model.editarTarefa(index, controller.text);
                 Navigator.pop(context);
+                _exibirSnackBar(context, 'Tarefa editada com sucesso');
               },
               child: Text('Salvar'),
             ),
@@ -155,5 +172,13 @@ class ItensScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _exibirSnackBar(BuildContext context, String mensagem) {
+    final snackBar = SnackBar(
+      content: Text(mensagem),
+      backgroundColor: Colors.lightBlueAccent,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
