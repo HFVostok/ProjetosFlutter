@@ -53,14 +53,37 @@ class ItensScreen extends StatelessWidget {
                   itemCount: model.tarefas.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(model.tarefas[index].descricao),
+                      title: Row(
+                        children: [
+                          Expanded(
+                            child: Text(model.tarefas[index].descricao),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.remove),
+                            onPressed: () {
+                              Provider.of<ItensController>(context,
+                                      listen: false)
+                                  .diminuirQuantidade(index);
+                            },
+                          ),
+                          Text('${model.tarefas[index].quantidade}'),
+                          IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              Provider.of<ItensController>(context,
+                                      listen: false)
+                                  .aumentarQuantidade(index);
+                            },
+                          ),
+                        ],
+                      ),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
                             icon: Icon(Icons.edit),
                             onPressed: () {
-                              _exibirDialogoEdicao(context, index);
+                              _exibirDialogoEdicao(context, index, model);
                             },
                           ),
                           Checkbox(
@@ -94,11 +117,10 @@ class ItensScreen extends StatelessWidget {
     );
   }
 
-  void _exibirDialogoEdicao(BuildContext context, int index) {
+  void _exibirDialogoEdicao(
+      BuildContext context, int index, ItensController model) {
     TextEditingController controller = TextEditingController();
-    controller.text = Provider.of<ItensController>(context, listen: false)
-        .tarefas[index]
-        .descricao;
+    controller.text = model.tarefas[index].descricao;
 
     showDialog(
       context: context,
@@ -116,10 +138,15 @@ class ItensScreen extends StatelessWidget {
               },
               child: Text('Cancelar'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Fechar'),
+            ),
             TextButton(
               onPressed: () {
-                Provider.of<ItensController>(context, listen: false)
-                    .editarTarefa(index, controller.text);
+                model.editarTarefa(index, controller.text);
                 Navigator.pop(context);
               },
               child: Text('Salvar'),
