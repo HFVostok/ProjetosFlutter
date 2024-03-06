@@ -37,7 +37,6 @@ class _SorteioState extends State<Sorteio> {
     });
   }
 
-  @override
   void initiState() {
     super.initState();
      _sortearNumero();
