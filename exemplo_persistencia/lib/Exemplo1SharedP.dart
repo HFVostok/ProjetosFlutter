@@ -29,6 +29,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   @override
   void initState() {
     super.initState();
+    
     loadTasks(); // Carrega as tarefas ao iniciar a tela
   }
 
