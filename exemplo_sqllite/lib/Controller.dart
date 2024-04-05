@@ -1,18 +1,21 @@
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:exemplo_sqllite/Model.dart'; // Importa o modelo de dados ContatoModel
+import 'package:path/path.dart'; // Importa a função join para manipulação de caminhos de arquivo
+import 'package:sqflite/sqflite.dart'; // Importa o pacote sqflite para operações com SQLite
 
 class BancoDadosCrud {
   static const String DB_NOME = 'contacts.db'; // Nome do banco de dados
-  static const String TABELA_NOME = 'contacts'; // Nome da tabela
+  static const String TABLE_NOME = 'contacts'; // Nome da tabela
   static const String
       CREATE_CONTACTS_TABLE_SCRIPT = // Script SQL para criar a tabela
-      "CREATE TABLE contacts(id INTEGER PRIMARY KEY," +
+      "CREATE TABLE IF NOT EXISTS contacts(id INTEGER PRIMARY KEY," +
           "nome TEXT, email TEXT, telefone TEXT," +
           "endereco TEXT)";
 
+  
   Future<Database> _getDatabase() async {
     return openDatabase(
-      join(await getDatabasesPath(), DB_NOME), // Caminho do banco de dados
+      join(
+          await getDatabasesPath(), DB_NOME), // Caminho do banco de dados
       onCreate: (db, version) {
         return db.execute(
             CREATE_CONTACTS_TABLE_SCRIPT); // Executa o script de criação da tabela quando o banco é criado
@@ -20,51 +23,50 @@ class BancoDadosCrud {
       version: 1,
     );
   }
-
   // Método para criar um novo contato no banco de dados
-  Future<void> create(ContactModel model) async {
+  Future<void> create(ContatoModel model) async {
     try {
       final Database db = await _getDatabase();
       await db.insert(
-          TABELA_NOME, model.toMap()); // Insere o contato no banco de dados
+          TABLE_NOME, model.toMap()); // Insere o contato no banco de dados
     } catch (ex) {
-      print(ex);
+      print(ex); // Imprime qualquer exceção que ocorra durante a inserção
       return;
     }
   }
 
   // Método para obter todos os contatos do banco de dados
-  Future<List<ContactModel>> getContacts() async {
+  Future<List<ContatoModel>> getContacts() async {
     try {
       final Database db = await _getDatabase();
       final List<Map<String, dynamic>> maps =
-          await db.query(TABELA_NOME); // Consulta todos os contatos na tabela
+          await db.query(TABLE_NOME); // Consulta todos os contatos na tabela
 
       return List.generate(
         maps.length,
         (i) {
-          return ContactModel.fromMap(maps[
+          return ContatoModel.fromMap(maps[
               i]); // Converte os resultados da consulta para objetos ContactModel
         },
       );
     } catch (ex) {
-      print(ex);
+      print(ex); // Imprime qualquer exceção que ocorra durante a consulta
       return [];
     }
   }
 
   // Método para atualizar um contato no banco de dados
-  Future<void> update(ContactModel model) async {
+  Future<void> update(ContatoModel model) async {
     try {
       final Database db = await _getDatabase();
       await db.update(
-        TABELA_NOME,
+        TABLE_NOME,
         model.toMap(),
         where: "id = ?", // Condição para atualizar o contato com base no ID
         whereArgs: [model.id],
       );
     } catch (ex) {
-      print(ex);
+      print(ex); // Imprime qualquer exceção que ocorra durante a atualização
       return;
     }
   }
@@ -74,12 +76,12 @@ class BancoDadosCrud {
     try {
       final Database db = await _getDatabase();
       await db.delete(
-        TABELA_NOME,
+        TABLE_NOME,
         where: "id = ?", // Condição para excluir o contato com base no ID
         whereArgs: [id],
       );
     } catch (ex) {
-      print(ex);
+      print(ex); // Imprime qualquer exceção que ocorra durante a exclusão
       return;
     }
   }

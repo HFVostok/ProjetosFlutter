@@ -1,5 +1,4 @@
-import 'package:exemplo_sqllite/View.dart'; // Importa a view principal da aplicação
-import 'package:flutter/material.dart'; // Importa o pacote de widgets do Flutter
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp()); // Inicializa a aplicação Flutter
