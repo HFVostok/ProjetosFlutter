@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:apphiago/controller.dart';
+import 'package:apphiago/tarefa_controller.dart';
 import 'package:apphiago/modelo.dart';
 
 class TarefasScreen extends StatefulWidget {
